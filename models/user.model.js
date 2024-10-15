@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const usernameRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9]{6,}$/;
+const numberRegex = /^\d{10}$/;
 const schema = new mongoose.Schema({
   name: {
     type: String,
@@ -10,7 +11,7 @@ const schema = new mongoose.Schema({
     maxlength: [50, "Name must be less 50 character long"],
   },
   email: {
-    type: email,
+    type: String,
     required: [true, "Email is Required"],
     unique: true,
     trim: true,
@@ -24,6 +25,13 @@ const schema = new mongoose.Schema({
     trim: true,
     lowercase: true,
     match: [usernameRegex, "Username much be contain character and number"],
+  },
+  number: {
+    type: String,
+    required: [true, "Phone Number is Required"],
+    unique: true,
+    trim: true,
+    match: [numberRegex, "Please Fill a valid Phone Number"],
   },
   password: {
     type: "String",
