@@ -10,12 +10,9 @@ const createSchema = Joi.object({
   password: Joi.string().min(6).required(),
 });
 
-const numberSchema = Joi.object({
-  phoneNumber: Joi.string()
-    .pattern(/^\d{10}$/) // 10-digit number regex
-    .required()
-    .messages({
-      "string.pattern.base": "Phone number must be a 10-digit number.",
-    }),
+const loginSchema = Joi.object({
+  email: Joi.string().email().required(),
+  password: Joi.string().min(6).required(),
 });
-module.exports = { createSchema, numberSchema };
+
+module.exports = { createSchema, loginSchema };

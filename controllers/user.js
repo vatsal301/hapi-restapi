@@ -1,6 +1,8 @@
 const userServices = require("../services/user.services");
 const responseManager = require("../utility/responseManager");
 const encryption = require("../utility/encryption");
+const jwt = require("jsonwebtoken");
+
 const registerHandler = async (request, h) => {
   // const { name, email, username, number, password } = request.payload;
   try {
@@ -38,5 +40,38 @@ const registerHandler = async (request, h) => {
     );
   }
 };
+const loginHandler = async (request, h) => {
+  try {
+    const { email, password } = request.payload;
+    const userData = await userServices.findEmail(email);
+    if (!userData)
+      return responseManager.error(h, "Invalid Email or Password", {}, 401);
+    const validatePassword = await encryption.validatePassword(
+      password,
+      userData.password
+    );
+    if (!validatePassword)
+      return responseManager.error(h, "Invalid Email or Password", {}, 401);
 
-module.exports = { registerHandler };
+    const token = jwt.sign({ _id: userData._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+    delete userData.password;
+    return responseManager.success(
+      h,
+      `${userData.name} you are login Successfully`,
+      { token, userData },
+      200
+    );
+  } catch (error) {
+    message = `Server error occurred during 'loginHandler' deletion: ${error.message}`;
+    return responseManager.error(
+      h,
+      message,
+      { ...error, name: error.name },
+      500
+    );
+  }
+};
+
+module.exports = { registerHandler, loginHandler };

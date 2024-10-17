@@ -1,0 +1,5 @@
+
+
+const generateJwt = async (data) => {
+  
+};

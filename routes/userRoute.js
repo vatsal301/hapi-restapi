@@ -13,52 +13,19 @@ const usersRoute = [
         payload: userValidateSchema.createSchema,
         failAction: responseManager.failAction,
       },
-      handler: userControllers.registerHandler,
     },
+    handler: userControllers.registerHandler,
   },
   {
     method: "POST",
-    path: "/validate-phone",
+    path: "/api/user/login",
     options: {
       validate: {
-        payload: userValidateSchema.numberSchema,
-        failAction: (request, h, err) => {
-          // Log the error
-          console.error("Validation Error:", err.details);
-
-          // Return a structured error response
-          const response = {
-            status: "fail",
-            message: "Invalid input",
-            validation: {
-              code: 400,
-              details: err.details,
-            },
-          };
-
-          // Return the response with a 400 status code
-          return responseManager
-            .validationError(h, "message", err.details, 400)
-            .takeover();
-          // return h.response(response).code(400).takeover(); // `takeover()` prevents Hapi from continuing with the request lifecycle
-        },
-        // Handle validation errors using a custom method
-        options: {
-          abortEarly: false, // return all errors
-        },
+        payload: userValidateSchema.loginSchema,
+        failAction: responseManager.failAction,
       },
     },
-    handler: (request, h) => {
-      const { phoneNumber } = request.payload;
-      return h
-        .response({ message: `Phone number "${phoneNumber}" is valid.` })
-        .code(200);
-    },
+    handler: userControllers.loginHandler,
   },
-  // {
-  //   method: "POST",
-  //   path: "/user/login",
-  //   handler: (request, h) => {},
-  // },
 ];
 module.exports = usersRoute;

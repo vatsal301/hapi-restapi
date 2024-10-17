@@ -9,5 +9,7 @@ const encryptUtility = async (text) => {
     logger.error("error in encryptUtility", error);
   }
 };
-
-module.exports = { encryptUtility };
+const validatePassword = async (validateTO, validateWith) => {
+  return await bcrypt.compare(validateTO, validateWith);
+};
+module.exports = { encryptUtility, validatePassword };
