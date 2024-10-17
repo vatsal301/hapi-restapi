@@ -7,9 +7,12 @@ const responseManager = {
       message: message,
       data: data,
     };
+    logger.info(`Success: ${message}, statusCode: ${statusCode}`);
+
     return h.response(response).code(statusCode);
   },
   error: (h, message, error = {}, statusCode = 500) => {
+    // if (error.length) ;
     const response = {
       status: "error",
       message: message,

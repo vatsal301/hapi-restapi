@@ -33,25 +33,6 @@ const init = async () => {
       return "hello";
     },
   });
-  // server.route({
-  //   method: "POST",
-  //   path: "/validate-phone",
-  //   options: {
-  //     validate: {
-  //       payload: numberSchema,
-  //       // Handle validation errors using a custom method
-  //       options: {
-  //         abortEarly: false, // return all errors
-  //       },
-  //     },
-  //   },
-  //   handler: (request, h) => {
-  //     const { phoneNumber } = request.payload;
-  //     return h
-  //       .response({ message: `Phone number "${phoneNumber}" is valid.` })
-  //       .code(200);
-  //   },
-  // });
 
   server.route(userRoutes);
 

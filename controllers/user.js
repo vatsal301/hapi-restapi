@@ -1,11 +1,16 @@
 const userServices = require("../services/user.services");
 const responseManager = require("../utility/responseManager");
-
+const encryption = require("../utility/encryption");
 const registerHandler = async (request, h) => {
   // const { name, email, username, number, password } = request.payload;
   try {
-    const newUser = await userServices.create(request.payload);
-    // if (!newUser) return responseManager.error(h, "User not Found", {}, 404);
+    const userPayload = request.payload;
+    userPayload.password = await encryption.encryptUtility(
+      userPayload.password
+    );
+    let newUser = await userServices.create(userPayload);
+    newUser = newUser.toObject();
+    delete newUser.password;
     return responseManager.success(h, "User is Created", newUser, 201);
   } catch (error) {
     let message = "";
@@ -24,7 +29,7 @@ const registerHandler = async (request, h) => {
       return responseManager.error(h, message, {}, 409);
     }
 
-    message = "Server error occurred during task deletion";
+    message = `Server error occurred during 'registerHandler' deletion: ${error.message}`;
     return responseManager.error(
       h,
       message,
