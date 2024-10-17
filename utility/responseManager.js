@@ -27,6 +27,11 @@ const responseManager = {
     logger.error(`Error: ${message}, statusCode: ${statusCode}`);
     return h.response(response).code(statusCode);
   },
+  failAction: (request, h, err) => {
+    return responseManager
+      .validationError(h, "Validation failed", err.details, 400)
+      .takeover();
+  },
 };
 
 module.exports = responseManager;
