@@ -1,7 +1,6 @@
 const userControllers = require("../controllers/user");
 // const { validate } = require("../models/user.model");
 const responseManager = require("../utility/responseManager");
-const Joi = require("joi");
 
 const userValidateSchema = require("../validations/user.validation");
 const usersRoute = [
