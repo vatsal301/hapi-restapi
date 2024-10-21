@@ -2,13 +2,10 @@ const taskServices = require("../services/task.services");
 const responseManager = require("../utility/responseManager");
 
 const createTaskHandler = async (request, h) => {
-  // const { name, email, username, number, password } = request.payload;
   try {
     const taskPayload = request.payload;
-    // let newTask = await taskServices.create(taskPayload);
-    let newTask = {};
-    // newTask = newTask.toObject();
-    // delete newTask.password;
+    taskPayload.user = request.userId;
+    let newTask = await taskServices.create(taskPayload);
     return responseManager.success(h, "Task is Created", newTask, 201);
   } catch (error) {
     let message = "";

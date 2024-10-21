@@ -13,10 +13,10 @@ const init = async () => {
     port: 3000,
   });
 
-  server.ext("onRequest", (request, h) => {
-    logger.info(`${request.method.toUpperCase()} ${request.path}`);
-    return h.continue;
-  });
+  // server.ext("onRequest", (request, h) => {
+  //   logger.info(`${request.method.toUpperCase()} ${request.path}`);
+  //   return h.continue;
+  // });
   server.ext("onPreResponse", (request, h) => {
     const { response } = request;
     if (response.isBoom) {
@@ -29,6 +29,7 @@ const init = async () => {
     return h.continue;
   });
   await server.register(JWT);
+  await server.register(require("./plugins/onRequest"));
   const responseManager = require("./utility/responseManager");
   const userServices = require("./services/user.services");
   console.log("jwtStrategy", jwtStrategy);
