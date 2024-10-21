@@ -1,7 +1,7 @@
 const taskServices = require("../services/task.services");
 const responseManager = require("../utility/responseManager");
 
-const createTaskHandler = async (request, h) => {
+const createTasksHandler = async (request, h) => {
   try {
     const taskPayload = request.payload;
     taskPayload.user = request.userId;
@@ -34,4 +34,94 @@ const createTaskHandler = async (request, h) => {
   }
 };
 
-module.exports = { createTaskHandler };
+const getAllTasksHandler = async (request, h) => {
+  try {
+    let tasks = await taskServices.getAll(request.userId);
+    return responseManager.success(h, "Fetch all Task", tasks, 200);
+  } catch (error) {
+    let message = `Server error occurred during 'getAllTasksHandler' deletion: ${error.message}`;
+    return responseManager.error(
+      h,
+      message,
+      { ...error, name: error.name },
+      500
+    );
+  }
+};
+const getByIdTasksHandler = async (request, h) => {
+  try {
+    let task = await taskServices.getById(request.userId, request.params.id);
+    if (!task) return responseManager.error(h, "Invalid Id");
+    return responseManager.success(h, "Fetch Task", task, 200);
+  } catch (error) {
+    let message = `Server error occurred during 'getByIdTasksHandler' deletion: ${error.message}`;
+    return responseManager.error(
+      h,
+      message,
+      { ...error, name: error.name },
+      500
+    );
+  }
+};
+const updateTasksHandler = async (request, h) => {
+  try {
+    let isUser = await taskServices.getById(request.userId, request.params.id);
+    if (!isUser) return responseManager.validationError(h, "Invalid Task ID");
+    let task = await taskServices.update(
+      request.userId,
+      request.params.id,
+      request.payload
+    );
+    return responseManager.success(h, "Update Task", task, 200);
+  } catch (error) {
+    if (error.name === "ValidationError") {
+      let message;
+      message = "Validation failed";
+      const validationErrors = Object.values(error.errors).map((err) => ({
+        field: err.path,
+        message: err.message,
+      }));
+      return responseManager.validationError(h, message, validationErrors, 400);
+    }
+    message = `Server error occurred during 'updateTasksHandler' deletion: ${error.message}`;
+    return responseManager.error(
+      h,
+      message,
+      { ...error, name: error.name },
+      500
+    );
+  }
+};
+const deleteTasksHandler = async (request, h) => {
+  try {
+    let isUser = await taskServices.getById(request.userId, request.params.id);
+    if (!isUser) return responseManager.validationError(h, "Invalid Task ID");
+    let task = await taskServices.deleteById(request.userId, request.params.id);
+    return responseManager.success(h, "Delete Task", task, 200);
+  } catch (error) {
+    if (error.name === "ValidationError") {
+      let message;
+      message = "Validation failed";
+      const validationErrors = Object.values(error.errors).map((err) => ({
+        field: err.path,
+        message: err.message,
+      }));
+      return responseManager.validationError(h, message, validationErrors, 400);
+    }
+    message = `Server error occurred during 'deleteTasksHandler' deletion: ${error.message}`;
+    return responseManager.error(
+      h,
+      message,
+      { ...error, name: error.name },
+      500
+    );
+  }
+};
+
+module.exports = {
+  createTasksHandler,
+  getAllTasksHandler,
+  getByIdTasksHandler,
+  updateTasksHandler,
+  deleteTasksHandler,
+};

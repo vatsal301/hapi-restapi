@@ -12,7 +12,6 @@ const init = async () => {
     host: "localhost",
     port: 3000,
   });
-
   // server.ext("onRequest", (request, h) => {
   //   logger.info(`${request.method.toUpperCase()} ${request.path}`);
   //   return h.continue;
@@ -30,10 +29,7 @@ const init = async () => {
   });
   await server.register(JWT);
   await server.register(require("./plugins/onRequest"));
-  const responseManager = require("./utility/responseManager");
-  const userServices = require("./services/user.services");
-  console.log("jwtStrategy", jwtStrategy);
-  server.auth.strategy("jwt", "jwt", jwtStrategy);
+  // server.auth.strategy("jwt", "jwt", jwtStrategy);
 
   server.route({
     method: "GET",

@@ -1,5 +1,4 @@
 "use strict";
-const auth = require("../middlewares/auth");
 const responseManager = require("../utility/responseManager");
 const logger = require("../logger");
 const userServices = require("../services/user.services");
@@ -11,7 +10,8 @@ module.exports = {
     server.ext("onRequest", async (request, h) => {
       try {
         logger.info(`${request.method.toUpperCase()} ${request.path}`);
-        if (request.path == "/api/user/login") {
+
+        if (request.path === "/api/user/login") {
           return h.continue;
         }
         const token = request.headers["x-auth-token"]?.split(" ");
