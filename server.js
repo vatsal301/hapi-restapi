@@ -10,7 +10,7 @@ const init = async () => {
   await require("./config/database")();
   const server = Hapi.server({
     host: "localhost",
-    port: 3000,
+    port: process.env.PORT,
   });
   // server.ext("onRequest", (request, h) => {
   //   logger.info(`${request.method.toUpperCase()} ${request.path}`);

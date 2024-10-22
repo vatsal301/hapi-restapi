@@ -65,8 +65,9 @@ const getByIdTasksHandler = async (request, h) => {
 };
 const updateTasksHandler = async (request, h) => {
   try {
-    let isUser = await taskServices.getById(request.userId, request.params.id);
-    if (!isUser) return responseManager.validationError(h, "Invalid Task ID");
+    let isTask = await taskServices.getById(request.userId, request.params.id);
+    if (!isTask)
+      return responseManager.validationError(h, "Task Id Not Found", {}, 404);
     let task = await taskServices.update(
       request.userId,
       request.params.id,
@@ -94,8 +95,8 @@ const updateTasksHandler = async (request, h) => {
 };
 const deleteTasksHandler = async (request, h) => {
   try {
-    let isUser = await taskServices.getById(request.userId, request.params.id);
-    if (!isUser) return responseManager.validationError(h, "Invalid Task ID");
+    let isTask = await taskServices.getById(request.userId, request.params.id);
+    if (!isTask) return responseManager.validationError(h, "Task Id Not Found", {}, 404);
     let task = await taskServices.deleteById(request.userId, request.params.id);
     return responseManager.success(h, "Delete Task", task, 200);
   } catch (error) {
